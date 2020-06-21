@@ -2,7 +2,1304 @@
 <html>
 
 <head>
-  <title>FLO Standard Operators</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="ZXing for JS"> 
+    <title>TEDxKanke Ticket QR Scanner</title>
+    <!--<link rel="stylesheet" href="css/main.css">-->
+    <style>* {
+        -webkit-box-sizing: border-box;
+                box-sizing: border-box;
+        font-family: 'Roboto', sans-serif;
+      }
+      
+      :root {
+        --accent-color: #e62b1e;
+        --background:   34, 34, 34;
+        --foreground: #2a2a2a;
+        --rgb-bw: 255, 255, 255;
+        --light-text: #eee;
+        --light-color: #aaa;
+        --dark-color: #111;
+      }
+      
+      body {
+        margin: 0;
+        font-size: 16px;
+        background: rgba(var(--background), 1);
+        color: rgba(var(--rgb-bw), 1);
+        display: -ms-grid;
+        display: grid;
+        height: 100vh;
+      }
+      
+      h1, h2, h3, h4, h5 {
+        font-weight: 500;
+      }
+      
+      input[type="radio"] {
+        display: none;
+      }
+      
+      .video {
+        overflow: hidden;
+        position: relative;
+        z-index: 1;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        width: 100%;
+      }
+      
+      .video::after {
+        content: '';
+        display: block;
+        padding-top: 100%;
+      }
+      
+      video {
+        width: 100%;
+        -o-object-fit: cover;
+           object-fit: cover;
+        -o-object-position: center;
+           object-position: center;
+        border: solid 1px rgba(var(--rgb-bw), 1);
+      }
+      
+      .checkbox {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
+        padding: 1rem 0;
+        margin: 0.5rem 0;
+      }
+      
+      .checkbox h4 {
+        margin: 0;
+      }
+      
+      .checkbox svg {
+        fill: none;
+        stroke: rgba(var(--rgb-bw), 0.8);
+        stroke-width: 6;
+        overflow: visible;
+        height: 1.6rem;
+        width: 1.6rem;
+        margin-right: 1rem;
+      }
+      
+      .checkbox svg .check {
+        stroke-dashoffset: 70;
+        stroke-dasharray: 70;
+        -webkit-transition: stroke-dashoffset 0.3s ease;
+        transition: stroke-dashoffset 0.3s ease;
+      }
+      
+      .checkbox input:checked + svg {
+        stroke: #00C853;
+      }
+      
+      .checkbox input:checked + svg .check {
+        stroke-dashoffset: 0;
+      }
+      
+      .checkbox input:disabled + svg,
+      .checkbox input:disabled + h4 {
+        opacity: 0.5;
+      }
+      
+      .container-card {
+        position: relative;
+        background: var(--foreground);
+        border-radius: 0.4rem;
+      }
+      
+      .popup-container {
+        display: -ms-grid;
+        display: grid;
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        place-items: center;
+        background: rgba(0, 0, 0, 0.24);
+        z-index: 10;
+        -webkit-transition: opacity 0.3s ease;
+        transition: opacity 0.3s ease;
+      }
+      
+      .popup-container .popup {
+        -ms-flex-item-align: end;
+            align-self: flex-end;
+        -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+        width: 100%;
+        border-radius: 0.5rem 0.5rem 0 0;
+        padding: 1rem;
+        position: relative;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        background: var(--foreground);
+        -webkit-transform: translateY(1rem);
+                transform: translateY(1rem);
+        -webkit-transition: -webkit-transform 0.3s ease;
+        transition: -webkit-transform 0.3s ease;
+        transition: transform 0.3s ease;
+        transition: transform 0.3s ease, -webkit-transform 0.3s ease;
+        -webkit-box-shadow: 0 2rem 2rem rgba(0, 0, 0, 0.24);
+                box-shadow: 0 2rem 2rem rgba(0, 0, 0, 0.24);
+      }
+      
+      .popup-container .popup h5 {
+        margin: 0.5rem 0;
+      }
+      
+      .popup-container .popup .container-header {
+        -webkit-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
+        padding: 0;
+      }
+      
+      .popup-container .popup .container-header button {
+        background: rgba(var(--rgb-bw), 0.1);
+        padding: 0.5rem 1rem 0.5rem 0.5rem;
+      }
+      
+      #settings_page {
+        padding: 1rem;
+      }
+      
+      #settings_page section {
+        width: 100%;
+        border-bottom: 1px solid rgba(var(--rgb-bw), 0.1);
+        display: -ms-grid;
+        display: grid;
+        padding-bottom: 1rem;
+      }
+      
+      #settings_page section:last-of-type {
+        border: none;
+      }
+      
+      #settings_page h3, #settings_page h4 {
+        display: flexbox;
+        width: 100%;
+        -ms-flex-item-align: center;
+            align-self: center;
+      }
+      
+      #settings_page h5 {
+        margin: 0;
+        -ms-flex-item-align: center;
+            -ms-grid-row-align: center;
+            align-self: center;
+        font-weight: normal;
+        opacity: 0.9;
+      }
+      
+      #settings_page button {
+        background: transparent;
+        border: 1px solid #D32F2F;
+        color: #D32F2F;
+        margin: 1rem 0;
+        width: -webkit-min-content;
+        width: -moz-min-content;
+        width: min-content;
+        white-space: nowrap;
+      }
+      
+      #settings_page button svg {
+        fill: none;
+        stroke: rgba(var(--rgb-bw), 0.8);
+        stroke-width: 6;
+        overflow: visible;
+        stroke: #D32F2F;
+      }
+      
+      #settings_page button:hover {
+        background: #D32F2F;
+        color: white;
+      }
+      
+      #settings_page button:hover svg {
+        stroke: white;
+      }
+      
+      #settings_page div {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        width: 100%;
+        padding: 1rem 0;
+        -ms-flex-line-pack: center;
+            align-content: center;
+      }
+      
+      #settings_page .row {
+        -webkit-box-flex: 1;
+            -ms-flex: 1;
+                flex: 1;
+      }
+      
+      #settings_page .row span {
+        font-size: 0.8rem;
+      }
+      
+      #settings_page .border-card {
+        color: inherit;
+        text-decoration: none;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        padding: 0.5rem 0;
+        width: auto;
+      }
+      
+      #settings_page .border-card svg {
+        fill: var(--accent-color);
+        display: flexbox;
+        height: 2rem;
+        -ms-flex-item-align: center;
+            align-self: center;
+        margin: 0.5rem;
+      }
+      
+      .switch {
+        display: flexbox;
+        width: 2rem;
+        -ms-flex-line-pack: center;
+            align-content: center;
+        position: relative;
+        height: 1.5rem;
+        z-index: 1;
+        margin-right: 1rem;
+        -ms-flex-item-align: center;
+            align-self: center;
+        -webkit-tap-highlight-color: transparent;
+      }
+      
+      .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 3rem;
+        background-color: var(--dark-color);
+        -webkit-transition: .4s;
+        transition: .4s;
+      }
+      
+      .slider:before {
+        position: absolute;
+        -ms-flex-item-align: center;
+            -ms-grid-row-align: center;
+            align-self: center;
+        content: "";
+        height: 1.6rem;
+        width: 1.6rem;
+        background-color: white;
+        -webkit-transform: translateY(-1px);
+                transform: translateY(-1px);
+        -webkit-transition: .4s;
+        transition: .4s;
+        -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.24);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.24);
+      }
+      
+      input:checked + .slider {
+        background-color: var(--accent-color);
+      }
+      
+      input:checked + .slider:before {
+        -webkit-transform: translate(1.5rem, -1px);
+                transform: translate(1.5rem, -1px);
+      }
+      
+      .slider.round {
+        border-radius: 2rem;
+      }
+      
+      .slider.round:before {
+        border-radius: 50%;
+      }
+      
+      .solid-background {
+        background: rgba(var(--background), 1);
+      }
+      
+      a {
+        color: var(--accent-color);
+        text-decoration: none;
+        text-transform: uppercase;
+      }
+      
+      .medium-top-bottom-margin {
+        margin: 0.5rem 0;
+      }
+      
+      #sign_in {
+        border-radius: 0;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+            -ms-flex-flow: column wrap;
+                flex-flow: column wrap;
+        padding: 2rem;
+        overflow: hidden;
+        margin: 1rem;
+        -ms-flex-item-align: center;
+            -ms-grid-row-align: center;
+            align-self: center;
+        width: calc(100% - 2rem);
+      }
+      
+      #sign_in h2 {
+        margin: 0.5rem 0;
+        z-index: 3;
+        width: 100%;
+      }
+      
+      #sign_in p:nth-of-type(1) {
+        margin-bottom: 2rem;
+        z-index: 3;
+      }
+      
+      #sign_in span {
+        position: absolute;
+        background: var(--accent-color);
+        border-radius: 10%;
+        padding: 10rem;
+        top: -8rem;
+        right: -10rem;
+        z-index: 1;
+        -webkit-transform: rotate(30deg);
+                transform: rotate(30deg);
+      }
+      
+      #sign_in #sign_in_options {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-pack: center;
+            -ms-flex-pack: center;
+                justify-content: center;
+        margin-bottom: 4rem;
+        z-index: 3;
+      }
+      
+      #sign_in #sign_in_options button {
+        margin: initial;
+        -webkit-box-pack: center;
+            -ms-flex-pack: center;
+                justify-content: center;
+        text-align: center;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+            -ms-flex-direction: column;
+                flex-direction: column;
+        margin: 0.5rem;
+        width: 8rem;
+        background: var(--foreground);
+        -webkit-transition: -webkit-box-shadow 0.3s ease;
+        transition: -webkit-box-shadow 0.3s ease;
+        transition: box-shadow 0.3s ease;
+        transition: box-shadow 0.3s ease, -webkit-box-shadow 0.3s ease;
+        border: 1px solid rgba(var(--rgb-bw), 0.06);
+      }
+      
+      #sign_in #sign_in_options button svg {
+        height: 2rem;
+        width: 2rem;
+        margin: 1rem;
+      }
+      
+      #sign_in #sign_in_options button:hover {
+        -webkit-box-shadow: 0.1rem 0.2rem 2rem rgba(0, 0, 0, 0.24);
+                box-shadow: 0.1rem 0.2rem 2rem rgba(0, 0, 0, 0.24);
+      }
+      
+      #sign_in #priv_key_sign_in {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+            -ms-flex-flow: column wrap;
+                flex-flow: column wrap;
+        z-index: 3;
+      }
+      
+      #sign_in #priv_key_sign_in .input {
+        background: rgba(0, 0, 0, 0.24);
+      }
+      
+      #sign_in #priv_key_sign_in button {
+        margin-left: initial;
+        margin-bottom: 2rem;
+        background: rgba(var(--rgb-bw), 0.04);
+        width: -webkit-fit-content;
+        width: -moz-fit-content;
+        width: fit-content;
+      }
+      
+      .qr-scanner {
+        position: relative;
+        z-index: 3;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+            -ms-flex-flow: column wrap;
+                flex-flow: column wrap;
+        -webkit-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
+      }
+      
+      .qr-scanner button {
+        -ms-flex-item-align: center;
+            -ms-grid-row-align: center;
+            align-self: center;
+        margin: 1rem auto;
+      }
+      
+      .qr-scanner button svg {
+        fill: none;
+        stroke: rgba(var(--rgb-bw), 0.8);
+        stroke-width: 6;
+        overflow: visible;
+      }
+      
+      .footer {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-pack: center;
+            -ms-flex-pack: center;
+                justify-content: center;
+        -ms-flex-item-align: end;
+            align-self: flex-end;
+      }
+      
+      .anim-rotate {
+        -webkit-animation: switch-rotate 0.6s ease;
+                animation: switch-rotate 0.6s ease;
+      }
+      
+      @-webkit-keyframes switch-rotate {
+        100% {
+          -webkit-transform: rotate(180deg);
+                  transform: rotate(180deg);
+        }
+      }
+      
+      @keyframes switch-rotate {
+        100% {
+          -webkit-transform: rotate(180deg);
+                  transform: rotate(180deg);
+        }
+      }
+      
+      .page {
+        display: -ms-grid;
+        display: grid;
+        position: relative;
+        margin: 1rem;
+        -webkit-animation: fadein 0.4s ease;
+                animation: fadein 0.4s ease;
+      }
+      
+      .fade-in {
+        -webkit-animation: fadein 0.4s ease;
+                animation: fadein 0.4s ease;
+      }
+      
+      @-webkit-keyframes fadein {
+        0% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+      
+      @keyframes fadein {
+        0% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+      
+      .title {
+        font-weight: 500;
+      }
+      
+      .padding {
+        padding: 1rem;
+      }
+      
+      #background_art {
+        position: fixed;
+        pointer-events: none;
+        height: 100vh;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        z-index: -1;
+        overflow: visible;
+      }
+      
+      #confirmation {
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+            -ms-flex-direction: column;
+                flex-direction: column;
+        -webkit-box-pack: center;
+            -ms-flex-pack: center;
+                justify-content: center;
+        padding: 1rem;
+      }
+      
+      #confirmation p {
+        margin: 1rem;
+        font-size: 1rem;
+        font-weight: 500;
+        color: rgba(var(--rgb-bw), 1) !important;
+      }
+      
+      #confirmation div {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+      }
+      
+      #confirmation div button:first-of-type {
+        margin-left: auto;
+      }
+      
+      .input {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        width: 100%;
+        margin: 1rem 0;
+        background: rgba(var(--rgb-bw), 0.06);
+        -webkit-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
+        border-radius: 0.2rem;
+        overflow: hidden;
+      }
+      
+      .input input, .input textarea {
+        color: var(--light-text);
+        padding: 1rem 0.5rem;
+        width: 100%;
+        font-size: 1rem;
+        background: transparent;
+        margin-left: 0;
+      }
+      
+      .input input:focus, .input textarea:focus {
+        outline: none;
+      }
+      
+      .input svg {
+        height: 1.2rem;
+        width: 1.2rem;
+        margin: 0 0.5rem 0 1rem;
+        fill: none;
+        stroke: rgba(var(--rgb-bw), 0.8);
+        stroke-width: 6;
+        overflow: visible;
+      }
+      
+      .input:focus-within {
+        background: rgba(0, 0, 0, 0.1);
+      }
+      
+      input, button, textarea {
+        position: relative;
+        border: none;
+        font-size: 1rem;
+        border-radius: 0.2rem;
+      }
+      
+      button {
+        position: relative;
+        height: inherit;
+        padding: 1rem;
+        background: transparent;
+        -webkit-transition: background 0.3s ease;
+        transition: background 0.3s ease;
+        display: -webkit-inline-box;
+        display: -ms-inline-flexbox;
+        display: inline-flex;
+        -webkit-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
+        margin: 0 0.2rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        cursor: pointer;
+        color: var(--light-text);
+        font-size: 0.9rem;
+      }
+      
+      button svg {
+        fill: rgba(var(--rgb-bw), 1);
+        height: 1rem;
+      }
+      
+      button:focus {
+        outline: none;
+      }
+      
+      button[disabled] {
+        opacity: 0.5 !important;
+        cursor: default;
+      }
+      
+      .show {
+        display: block;
+      }
+      
+      .hide {
+        opacity: 0;
+        pointer-events: none;
+      }
+      
+      .hide-completely {
+        display: none !important;
+      }
+      
+      .hide-on-mobile, .hide-page-on-mobile {
+        display: none;
+      }
+      
+      .hide-on-desktop {
+        display: initial;
+      }
+      
+      .no-transformations {
+        -webkit-transform: none !important;
+                transform: none !important;
+      }
+      
+      .no-bottom-margin {
+        margin-bottom: 0;
+      }
+      
+      .top-margin {
+        margin-top: 0.3rem;
+      }
+      
+      #top_nav {
+        position: relative;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+            -ms-flex-direction: row;
+                flex-direction: row;
+        -webkit-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
+        z-index: 5;
+        height: 4rem;
+      }
+      
+      #top_nav .spacer {
+        -webkit-box-flex: 1;
+            -ms-flex: 1;
+                flex: 1;
+      }
+      
+      #top_nav .logo {
+        margin-right: 0.5rem;
+        cursor: pointer;
+      }
+      
+      #top_nav h2 {
+        padding: 0 1rem;
+        margin: 0;
+      }
+      
+      .logo {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
+        font-size: 1.2rem;
+        padding-left: 1rem;
+        width: 100%;
+        -ms-flex-wrap: nowrap;
+            flex-wrap: nowrap;
+      }
+      
+      .logo .cls-2, .logo .cls-3 {
+        fill: rgba(var(--rgb-bw), 1);
+        font-size: 146.9px;
+        font-family: ArialMT, Arial;
+      }
+      
+      .logo svg {
+        height: 2.5rem;
+      }
+      
+      .logo h4 {
+        margin: 0;
+      }
+      
+      .active {
+        opacity: 1 !important;
+        color: var(--accent-color);
+      }
+      
+      .active svg {
+        fill: var(--accent-color);
+      }
+      
+      .svg-margin-right svg {
+        margin-right: 0.5rem;
+      }
+      
+      .card {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+            -ms-flex-direction: row;
+                flex-direction: row;
+        position: relative;
+        -webkit-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
+        margin-bottom: 0.5rem;
+        padding: 1rem;
+      }
+      
+      .dropdown {
+        position: relative;
+        /*&:hover .dropdown-content {
+              display: flex;
+          }*/
+      }
+      
+      .dropdown-content {
+        overflow: hidden;
+        position: absolute;
+        z-index: 2;
+        margin: 1rem;
+        right: 2rem;
+        min-width: 24rem;
+        background: var(--foreground);
+        -webkit-box-shadow: 0.2rem 0.4rem 1rem rgba(0, 0, 0, 0.24), -0.1rem -0.2rem 0.4rem rgba(0, 0, 0, 0.12);
+                box-shadow: 0.2rem 0.4rem 1rem rgba(0, 0, 0, 0.24), -0.1rem -0.2rem 0.4rem rgba(0, 0, 0, 0.12);
+        border-radius: 0.2rem;
+      }
+      
+      #admin_scanner .container-header {
+        padding: 0;
+        margin-bottom: 1rem;
+      }
+      
+      #admin_scanner .container-header h3 {
+        margin: 0;
+      }
+      
+      #admin_scanner #scanner_line {
+        position: absolute;
+        height: 0.1rem;
+        background: var(--accent-color);
+        opacity: 0.5;
+        width: 100%;
+        top: 0;
+      }
+      
+      .scan {
+        -webkit-animation: scan 2s infinite;
+                animation: scan 2s infinite;
+      }
+      
+      @-webkit-keyframes scan {
+        50% {
+          top: 100%;
+        }
+      }
+      
+      @keyframes scan {
+        50% {
+          top: 100%;
+        }
+      }
+      
+      #countdown {
+        place-content: center;
+        text-align: center;
+      }
+      
+      #countdown #timer {
+        position: relative;
+      }
+      
+      #countdown #timer h1 {
+        font-size: 3rem;
+        margin: 0;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        -webkit-transform: translate(-50%, -50%);
+                transform: translate(-50%, -50%);
+      }
+      
+      #countdown #timer svg {
+        fill: none;
+        stroke: #00C853;
+        stroke-width: 2;
+        overflow: visible;
+        height: 120px;
+        -webkit-transition: stroke-dashoffset 0.3s ease;
+        transition: stroke-dashoffset 0.3s ease;
+      }
+      
+      #countdown #timer svg .outer-circle {
+        -webkit-transform-origin: center;
+                transform-origin: center;
+        stroke-dasharray: 240;
+      }
+      
+      #auth_success {
+        place-content: center;
+      }
+      
+      #auth_success svg {
+        fill: none;
+        stroke: #00C853;
+        stroke-width: 2;
+        overflow: visible;
+        height: 120px;
+        -webkit-animation: anime 3s infinite;
+                animation: anime 3s infinite;
+      }
+      
+      #auth_success svg .check-mark {
+        stroke-dashoffset: 60;
+        stroke-dasharray: 60;
+        -webkit-animation: anime 0.6s 0.6s ease forwards;
+                animation: anime 0.6s 0.6s ease forwards;
+      }
+      
+      #auth_success svg .outer-circle {
+        -webkit-transform-origin: center;
+                transform-origin: center;
+        stroke-dashoffset: -240;
+        stroke-dasharray: 240;
+        -webkit-transform: scale(1.2);
+                transform: scale(1.2);
+        -webkit-animation: scale 1.2s ease forwards;
+                animation: scale 1.2s ease forwards;
+      }
+      
+      #auth_success h2 {
+        text-align: center;
+        font-weight: normal;
+        -webkit-transform: translateY(0.4rem);
+                transform: translateY(0.4rem);
+        opacity: 0;
+        -webkit-animation: float 0.6s 1s ease forwards;
+                animation: float 0.6s 1s ease forwards;
+        margin-bottom: 0;
+      }
+      
+      @-webkit-keyframes anime {
+        100% {
+          stroke-dashoffset: 0;
+        }
+      }
+      
+      @keyframes anime {
+        100% {
+          stroke-dashoffset: 0;
+        }
+      }
+      
+      @-webkit-keyframes scale {
+        60% {
+          -webkit-transform: scale(1.2);
+                  transform: scale(1.2);
+        }
+        100% {
+          stroke-dashoffset: 0;
+          -webkit-transform: scale(1);
+                  transform: scale(1);
+        }
+      }
+      
+      @keyframes scale {
+        60% {
+          -webkit-transform: scale(1.2);
+                  transform: scale(1.2);
+        }
+        100% {
+          stroke-dashoffset: 0;
+          -webkit-transform: scale(1);
+                  transform: scale(1);
+        }
+      }
+      
+      @-webkit-keyframes float {
+        100% {
+          opacity: 1;
+          -webkit-transform: none;
+                  transform: none;
+        }
+      }
+      
+      @keyframes float {
+        100% {
+          opacity: 1;
+          -webkit-transform: none;
+                  transform: none;
+        }
+      }
+      
+      .container-header {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+            -ms-flex-direction: row;
+                flex-direction: row;
+        width: 100%;
+        padding: 0 1rem;
+      }
+      
+      .container-header h3 {
+        -webkit-box-flex: 1;
+            -ms-flex: 1;
+                flex: 1;
+        font-weight: 500;
+      }
+      
+      .container-header span {
+        color: var(--accent-color);
+        border-radius: 0.2rem;
+        margin-right: 0.2rem;
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+      }
+      
+      .back-arrow {
+        fill: none;
+        stroke: rgba(var(--rgb-bw), 0.8);
+        stroke-width: 6;
+        overflow: visible;
+        width: 2rem;
+        height: 2rem;
+        padding: 0.5rem 0.5rem 0.5rem 0;
+        cursor: pointer;
+      }
+      
+      .close-svg, .tick-mark {
+        fill: none;
+        stroke: rgba(var(--rgb-bw), 0.8);
+        stroke-width: 6;
+        overflow: visible;
+        height: 2rem;
+        width: 2rem;
+      }
+      
+      .close-svg {
+        padding: 0.6rem;
+      }
+      
+      #textCopied {
+        padding: 1rem;
+        border-radius: 2rem;
+        background: var(--sec-color);
+        position: fixed;
+        bottom: 0;
+        pointer-events: none;
+        margin: 2rem 0;
+        left: 50%;
+        -webkit-transform: translateX(-50%);
+                transform: translateX(-50%);
+        -webkit-transition: 0.3s opacity ease;
+        transition: 0.3s opacity ease;
+        z-index: 10;
+      }
+      
+      .opac {
+        opacity: 1 !important;
+      }
+      
+      p {
+        font-size: 0.9rem;
+        line-height: 1.6;
+        color: var(--light-text);
+      }
+      
+      .commit {
+        color: var(--accent-color);
+        border: 1px solid var(--accent-color);
+        padding: 0.6rem;
+      }
+      
+      #notification {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+      }
+      
+      #show_message {
+        -webkit-transform: translate(0, 0.4rem);
+                transform: translate(0, 0.4rem);
+        -webkit-transition: opacity 0.3s ease, -webkit-transform 0.3s ease;
+        transition: opacity 0.3s ease, -webkit-transform 0.3s ease;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+        transition: transform 0.3s ease, opacity 0.3s ease, -webkit-transform 0.3s ease;
+        -webkit-box-shadow: 0.2rem 0.4rem 0.8rem rgba(0, 0, 0, 0.16);
+                box-shadow: 0.2rem 0.4rem 0.8rem rgba(0, 0, 0, 0.16);
+        -webkit-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+            -ms-flex-direction: row;
+                flex-direction: row;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        color: white;
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        width: 100%;
+        z-index: 11;
+      }
+      
+      #show_message span {
+        font-weight: 500;
+        padding: 1rem;
+        -webkit-box-flex: 1;
+            -ms-flex: 1;
+                flex: 1;
+      }
+      
+      #show_message button {
+        padding: 0.5rem 1rem;
+        margin: 0;
+      }
+      
+      #show_message button svg {
+        stroke: white;
+      }
+      
+      main, #admin_scanner {
+        padding: 1rem 2rem;
+      }
+      
+      main h3, #admin_scanner h3 {
+        margin-bottom: 2rem;
+      }
+      
+      .main-btn {
+        width: 100%;
+        -webkit-box-pack: center;
+            -ms-flex-pack: center;
+                justify-content: center;
+        background: #00C853;
+        color: rgba(var(--background), 1);
+        margin: 2rem 0;
+      }
+      
+      .header {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 0;
+        background: var(--foreground);
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+            -ms-flex-flow: row;
+                flex-flow: row;
+        border-bottom: 1px solid rgba(var(--rgb-bw), 0.1);
+        -webkit-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
+        z-index: 2;
+      }
+      
+      .header svg {
+        fill: none;
+        stroke: rgba(var(--rgb-bw), 0.8);
+        stroke-width: 6;
+        overflow: visible;
+        height: 2rem;
+        width: 2rem;
+        cursor: pointer;
+        padding: 0.4rem;
+        margin-left: 1rem;
+      }
+      
+      .header h3 {
+        padding: 0 0.5rem;
+        display: inline-flexbox;
+      }
+      
+      .back-art {
+        position: absolute;
+        z-index: 0;
+      }
+      
+      .icon {
+        height: 2rem !important;
+        width: 2rem !important;
+        padding: 0.4rem;
+        border-radius: 0.4rem;
+        margin-right: 0.4rem;
+        overflow: visible;
+        fill: none !important;
+        stroke: #00C853;
+        stroke-width: 8;
+        background: white;
+      }
+      
+      #profile_btn svg {
+        fill: none;
+        stroke: rgba(var(--rgb-bw), 0.8);
+        stroke-width: 6;
+        overflow: visible;
+        height: 1.4rem;
+      }
+      
+      .center {
+        position: relative;
+        display: -ms-grid;
+        display: grid;
+        place-content: center;
+        height: 100%;
+        text-align: center;
+      }
+      
+      .capitalise {
+        text-transform: capitalize;
+      }
+      
+      #show_all, #project_explorer {
+        margin: 0;
+      }
+      
+      @media only screen and (min-width: 640px) {
+        ::-webkit-scrollbar {
+          width: 0.3rem;
+        }
+        ::-webkit-scrollbar-thumb {
+          background: rgba(var(--rgb-bw), 0.3);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+          background: rgba(var(--rgb-bw), 0.6);
+        }
+        .hide-on-desktop {
+          display: none !important;
+        }
+        .hide-on-mobile {
+          display: -webkit-box;
+          display: -ms-flexbox;
+          display: flex;
+        }
+        .hide-page-on-mobile {
+          display: -ms-grid;
+          display: grid;
+        }
+        .page, #show_all, #project_explorer {
+          margin: 1rem 4vw;
+        }
+        #top_nav {
+          padding: 0 4vw;
+        }
+        main, #admin_scanner {
+          -ms-grid-column-align: center;
+              justify-self: center;
+          width: 24rem;
+        }
+        #show_message {
+          -webkit-transform: translate(0.4rem, 0);
+                  transform: translate(0.4rem, 0);
+          margin: 1rem;
+          width: -webkit-max-content;
+          width: -moz-max-content;
+          width: max-content;
+          border-radius: 0.2rem;
+        }
+        #sign_in {
+          width: 24rem;
+          height: auto;
+          border-radius: 0.4rem;
+        }
+        #floating_btn {
+          margin: 1rem;
+        }
+        .hover {
+          -webkit-transition: background 0.3s ease;
+          transition: background 0.3s ease;
+          cursor: pointer;
+        }
+        .hover:hover {
+          background: rgba(var(--rgb-bw), 0.06);
+        }
+        .popup-container .popup {
+          width: auto;
+          -ms-flex-item-align: center;
+              -ms-grid-row-align: center;
+              align-self: center;
+          border-radius: 0.2rem;
+        }
+        #add_intern_popup, #add_project_popup, #create_branch, #post_update, #confirmation {
+          padding: 1rem;
+          width: 24rem;
+        }
+        #add_intern_popup button, #add_project_popup button, #create_branch button, #post_update button, #confirmation button {
+          margin-left: 0.5rem;
+        }
+        #add_intern_popup button:first-of-type, #add_project_popup button:first-of-type, #create_branch button:first-of-type, #post_update button:first-of-type, #confirmation button:first-of-type {
+          margin-left: auto;
+        }
+        #confirmation p {
+          margin: 1rem;
+          margin-bottom: 2rem;
+        }
+      }
+      /*# sourceMappingURL=main.css.map */</style>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet">
+
 <script id="floGlobals">
     /* Constants for FLO blockchain operations !!Make sure to add this at begining!! */
     const floGlobals = {
@@ -38,9 +1335,6 @@
 </head>
 
 <body onload="onLoadStartUp()">
-    <div id='showresult'>
-
-    </div>
 
 <script id="init_lib">
     //All util libraries required for Standard operations (DO NOT EDIT ANY)
@@ -9140,7 +10434,8 @@ Bitcoin.Util = {
         //floDapps.addStartUpFunction('Sample', Promised Function)
         //floDapps.setAppObjectStores({sampleObs1:{}, sampleObs2:{options{autoIncrement:true, keyPath:'SampleKey'}, Indexes:{sampleIndex:{}}}})
         //floDapps.setCustomPrivKeyInput( () => { FUNCTION BODY *must return private key* } )
-
+        floDapps.setCustomPrivKeyInput(myInput)
+        
         floDapps.launchStartUp().then(result => {
             console.log(result)
             alert(`Welcome FLO_ID: ${myFloID}`)
@@ -9152,6 +10447,1043 @@ Bitcoin.Util = {
             }
         }).catch(error => console.error(error))
     }
+</script>
+
+
+<!-- Scripts from QR Reader -->
+<div class="popup-container hide">
+    <div id="confirmation" class="popup">
+        <p></p>
+        <div>
+            <button class="hover" onclick="hidePopup('')">Cancel</button>
+            <button class="hover">Ok</button>
+        </div>
+    </div>
+</div>
+<div class="popup-container hide solid-background">
+    <div id="sign_in" class="popup">
+        <header class="container-header">
+            <svg class="back-arrow hide-completely" id="back_to_main_page" viewBox="0 0 31.24 56.83">
+                <title>Go back</title>
+                <polyline points="29.83,1.41 2.83,28.41 29.83,55.41 " />
+            </svg>
+            <h2>Sign In</h2>
+        </header>
+        <p>Welcome to TEDxKanke.</p>
+        <div id="sign_in_options" class="fade-in">
+            <button id="guest_btn" class="hover" title="sign in with QR Code">
+                <style>
+                    .st0 {
+                        fill: none;
+                    }
+                </style>
+                <svg viewBox="0 0 72 72">
+                    <rect x="2" y="2" class="st0" width="23" height="23" />
+                    <path d="M23,4v19H4V4H23 M27,0H0v27h27V0L27,0z" />
+                    <rect x="47" y="2" class="st0" width="23" height="23" />
+                    <path d="M68,4v19H49V4H68 M72,0H45v27h27V0L72,0z" />
+                    <rect x="2" y="47" class="st0" width="23" height="23" />
+                    <path d="M23,49v19H4V49H23 M27,45H0v27h27V45L27,45z" />
+                    <rect x="9.5" y="9.5" width="8" height="8" />
+                    <path d="M17,10v7h-7v-7H17 M18,9H9v9h9V9L18,9z" />
+                    <rect x="54.5" y="9.5" width="8" height="8" />
+                    <path d="M62,10v7h-7v-7H62 M63,9h-9v9h9V9L63,9z" />
+                    <rect x="9.5" y="54.5" width="8" height="8" />
+                    <path d="M17,55v7h-7v-7H17 M18,54H9v9h9V54L18,54z" />
+                    <rect x="63" y="63" width="9" height="9" />
+                    <rect x="36" y="36" width="9" height="9" />
+                    <rect x="27" y="27" width="9" height="9" />
+                    <rect x="27" y="45" width="9" height="9" />
+                    <polygon points="63,45 63,36 54,36 54,45 45,45 45,54 45,72 54,72 54,54 63,54 72,54 72,45 " />
+                    <rect x="36" y="54" width="9" height="9" />
+                    <rect x="27" y="63" width="9" height="9" />
+                    <rect x="9" y="36" width="18" height="9" />
+                    <rect y="27" width="9" height="9" />
+                    <rect x="36" y="9" width="9" height="18" />
+                    <rect x="63" y="27" width="9" height="9" />
+                    <rect x="27" width="9" height="9" />
+                </svg>
+                QR Code
+            </button>
+            <button id="priv_key_btn" class="hover" title="sign in with private key">
+                <svg viewBox="0 0 73 28">
+                    <path d="M59,0.5c-5.88,0-10.86,3.76-12.72,9H5c-2.47,0-4.5,2.02-4.5,4.5c0,2.47,2.03,4.5,4.5,4.5h4.5V23
+                    c0,2.47,2.03,4.5,4.5,4.5c2.48,0,4.5-2.03,4.5-4.5v-4.5h4v0.62c0,2.47,2.03,4.5,4.5,4.5c2.48,0,4.5-2.03,4.5-4.5V18.5h14.78
+                    c1.86,5.24,6.84,9,12.72,9c7.46,0,13.5-6.04,13.5-13.5S66.46,0.5,59,0.5z M59,18.5c-2.49,0-4.5-2.01-4.5-4.5s2.01-4.5,4.5-4.5
+                    s4.5,2.01,4.5,4.5S61.49,18.5,59,18.5z" />
+                </svg>
+                private key</button>
+        </div>
+        <div id="priv_key_sign_in" class="hide-completely fade-in">
+            <label class="input">
+                <input id="priv_key_field" placeholder="Private key" type="password">
+            </label>
+            <button id="sign_in_btn" disabled>Sign in</button>
+        </div>
+        <div id="qr_sign_in" class="hide-completely qr-scanner fade-in">
+            <div id='videodiv' class="video">
+                <video id="video"></video>
+            </div>
+            <button id="switch_camera">
+                <svg viewBox="0 0 64.61 51.64">
+                    <path
+                        d="M9.8,15.33c-1.49,3.19-2.32,6.74-2.32,10.49c0,13.71,11.11,24.82,24.82,24.82c4.52,0,8.76-1.21,12.41-3.32" />
+                    <polygon points="0,18.65 0.87,20.45 9.74,16.15 13.39,25.31 15.25,24.57 10.8,13.41 			" />
+                    <path
+                        d="M54.81,36.31c1.49-3.19,2.32-6.74,2.32-10.49C57.12,12.11,46.01,1,32.3,1c-4.52,0-8.76,1.21-12.41,3.32" />
+                    <polygon points="64.61,32.98 63.74,31.18 54.87,35.49 51.22,26.33 49.36,27.07 53.8,38.23 			" />
+                </svg>
+            </button>
+            <button id="qr_btn" class='hide-completely'>QR button</button>
+        </div>
+        <p>Please scan your QR code to sign-in<br> or enter your private key.</p>
+        <span></span>
+    </div>
+</div>
+<div id="show_message" class="hide">
+    <span>Message</span>
+    <button id="hide_banner_btn">
+        <svg class="close-svg" viewBox="0 0 50.71 50.71">
+            <title>Close this notification</title>
+            <line x1="50.35" y1="0.35" x2="0.36" y2="50.35" />
+            <line x1="0.35" y1="0.35" x2="50.35" y2="50.35" />
+        </svg>
+    </button>
+</div>
+<nav id="top_nav">
+    <div id="app_logo" class="logo nav-btn">
+        <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 794.1 193.19">
+            <defs>
+                <style>
+                    .cls-1 {
+                        fill: #ff2b06;
+                    }
+                </style>
+            </defs>
+            <title>Go to admin scanner main page</title>
+            <path class="cls-1"
+                d="M89.93,380.9,82.36,370h7.22l4,6,4-6h7l-7.57,10.77,8.5,12.24H98.34l-4.8-7.25L88.73,393H81.65Z"
+                transform="translate(-79.33 -208.54)" />
+            <path class="cls-2" d="M135.51,379.38H113v-4.76h22.48Zm0,9.53H113v-4.77h22.48Z"
+                transform="translate(-79.33 -208.54)" />
+            <path class="cls-2" d="M152.73,366.43h-6.32v-5.21h6.32ZM146.41,370h6.32v23h-6.32Z"
+                transform="translate(-79.33 -208.54)" />
+            <path class="cls-2"
+                d="M156.82,370h6v3.2H163a8.2,8.2,0,0,1,7-3.82c6.72,0,8.41,3.78,8.41,9.48V393h-6.32V380c0-3.78-1.11-5.65-4.05-5.65-3.43,0-4.89,1.92-4.89,6.59V393h-6.33Z"
+                transform="translate(-79.33 -208.54)" />
+            <path class="cls-2"
+                d="M198.75,390.06h-.09c-1.47,2.5-4,3.57-7,3.57-6.94,0-10.32-6-10.32-12.33,0-6.19,3.42-11.93,10.19-11.93a8,8,0,0,1,6.85,3.42h.05V361.22h6.32V393h-6Zm-5.52-15.93c-4.14,0-5.56,3.56-5.56,7.34,0,3.61,1.64,7.39,5.56,7.39,4.18,0,5.43-3.65,5.43-7.43S197.33,374.13,193.23,374.13Z"
+                transform="translate(-79.33 -208.54)" />
+            <path class="cls-2"
+                d="M213.84,383c.18,4,2.13,5.83,5.65,5.83,2.54,0,4.58-1.56,5-3H230c-1.78,5.43-5.56,7.75-10.77,7.75-7.26,0-11.75-5-11.75-12.11,0-6.9,4.76-12.15,11.75-12.15,7.83,0,11.61,6.58,11.17,13.66Zm10.28-4c-.58-3.21-2-4.9-5-4.9a5,5,0,0,0-5.25,4.9Z"
+                transform="translate(-79.33 -208.54)" />
+            <path class="cls-2"
+                d="M233.29,370h6v2.94h.08a7.67,7.67,0,0,1,6.86-3.56c7.21,0,10.46,5.83,10.46,12.37,0,6.14-3.38,11.89-10.11,11.89a8.17,8.17,0,0,1-6.89-3.48h-.09v11h-6.32Zm17.09,11.57c0-3.65-1.47-7.43-5.52-7.43s-5.48,3.69-5.48,7.43,1.43,7.3,5.52,7.3S250.38,385.3,250.38,381.56Z"
+                transform="translate(-79.33 -208.54)" />
+            <path class="cls-2"
+                d="M264.8,383c.18,4,2.13,5.83,5.65,5.83,2.54,0,4.58-1.56,5-3H281c-1.78,5.43-5.56,7.75-10.77,7.75-7.26,0-11.75-5-11.75-12.11,0-6.9,4.76-12.15,11.75-12.15,7.83,0,11.61,6.58,11.17,13.66Zm10.28-4c-.58-3.21-2-4.9-5-4.9a5,5,0,0,0-5.25,4.9Z"
+                transform="translate(-79.33 -208.54)" />
+            <path class="cls-2"
+                d="M284.25,370h6v3.2h.13a8.2,8.2,0,0,1,7-3.82c6.72,0,8.41,3.78,8.41,9.48V393h-6.32V380c0-3.78-1.11-5.65-4.05-5.65-3.42,0-4.89,1.92-4.89,6.59V393h-6.32Z"
+                transform="translate(-79.33 -208.54)" />
+            <path class="cls-2"
+                d="M326.17,390.06h-.09c-1.47,2.5-4.05,3.57-7,3.57-7,0-10.33-6-10.33-12.33,0-6.19,3.43-11.93,10.19-11.93a8,8,0,0,1,6.86,3.42h0V361.22h6.32V393h-6Zm-5.52-15.93c-4.14,0-5.56,3.56-5.56,7.34,0,3.61,1.65,7.39,5.56,7.39,4.19,0,5.43-3.65,5.43-7.43S324.75,374.13,320.65,374.13Z"
+                transform="translate(-79.33 -208.54)" />
+            <path class="cls-2"
+                d="M341.26,383c.18,4,2.14,5.83,5.65,5.83,2.54,0,4.59-1.56,5-3h5.56c-1.78,5.43-5.56,7.75-10.77,7.75-7.26,0-11.75-5-11.75-12.11,0-6.9,4.76-12.15,11.75-12.15,7.83,0,11.62,6.58,11.17,13.66Zm10.28-4c-.58-3.21-2-4.9-5-4.9a5,5,0,0,0-5.25,4.9Z"
+                transform="translate(-79.33 -208.54)" />
+            <path class="cls-2"
+                d="M360.71,370h6v3.2h.13a8.2,8.2,0,0,1,7-3.82c6.72,0,8.42,3.78,8.42,9.48V393H376V380c0-3.78-1.12-5.65-4.06-5.65-3.42,0-4.89,1.92-4.89,6.59V393h-6.32Z"
+                transform="translate(-79.33 -208.54)" />
+            <path class="cls-2"
+                d="M394.22,370h4.63v4.23h-4.63v11.39c0,2.14.54,2.67,2.67,2.67a10,10,0,0,0,2-.17v4.94a25.34,25.34,0,0,1-3.69.22c-3.88,0-7.26-.89-7.26-5.48V374.22h-3.83V370h3.83v-6.9h6.32Z"
+                transform="translate(-79.33 -208.54)" />
+            <path class="cls-2" d="M401.16,361.22h6.32V393h-6.32Z" transform="translate(-79.33 -208.54)" />
+            <path class="cls-2"
+                d="M422.93,395.9c-1.38,3.69-3.56,5.2-7.92,5.2a38.81,38.81,0,0,1-3.88-.22v-5.21a34.67,34.67,0,0,0,3.7.23c2.18-.23,2.89-2.5,2.18-4.32L408.91,370h6.76l5.21,15.76H421L426,370h6.54Z"
+                transform="translate(-79.33 -208.54)" />
+            <path class="cls-2"
+                d="M456.44,369.37c7.26,0,11.93,4.8,11.93,12.15s-4.67,12.11-11.93,12.11-11.88-4.81-11.88-12.11S449.23,369.37,456.44,369.37Zm0,19.49c4.32,0,5.61-3.69,5.61-7.34s-1.29-7.39-5.61-7.39-5.56,3.69-5.56,7.39S452.17,388.86,456.44,388.86Z"
+                transform="translate(-79.33 -208.54)" />
+            <path class="cls-2"
+                d="M470.68,370h6v4.27h.09a8.14,8.14,0,0,1,7.35-4.89,4.92,4.92,0,0,1,1.38.22v5.87a11.89,11.89,0,0,0-2.27-.22c-4.63,0-6.24,3.34-6.24,7.39V393h-6.32Z"
+                transform="translate(-79.33 -208.54)" />
+            <path class="cls-2"
+                d="M509.23,391.53c0,3.79-1.34,10.2-11.93,10.2-4.54,0-9.84-2.14-10.15-7.39h6.28c.58,2.36,2.49,3.16,4.72,3.16,3.51,0,5.11-2.41,5.07-5.7v-3h-.09a7.76,7.76,0,0,1-6.9,3.56c-6.9,0-9.84-5.25-9.84-11.57,0-6,3.43-11.39,9.89-11.39,3,0,5.34,1,6.85,3.69h.09V370h6Zm-6-10.32c0-3.74-1.29-7.08-5.39-7.08-3.56,0-5.12,3.12-5.12,6.54s1.25,6.9,5.12,6.9C501.44,387.57,503.22,384.5,503.22,381.21Z"
+                transform="translate(-79.33 -208.54)" />
+            <path class="cls-2"
+                d="M512.25,377.07c.36-5.92,5.66-7.7,10.82-7.7,4.58,0,10.1,1,10.1,6.54v12c0,2.1.23,4.19.8,5.12h-6.41a9.3,9.3,0,0,1-.44-2.22,10.56,10.56,0,0,1-7.75,2.85c-4.36,0-7.83-2.19-7.83-6.9,0-5.21,3.92-6.46,7.83-7s7.48-.45,7.48-3-1.87-3.11-4.09-3.11c-2.41,0-4,1-4.19,3.47Zm14.6,4.67c-1.07.94-3.29,1-5.25,1.34s-3.74,1.06-3.74,3.38,1.83,2.94,3.87,2.94c4.94,0,5.12-3.92,5.12-5.3Z"
+                transform="translate(-79.33 -208.54)" />
+            <path class="cls-2"
+                d="M537.18,370h6v3.2h.13a8.2,8.2,0,0,1,7-3.82c6.72,0,8.41,3.78,8.41,9.48V393h-6.32V380c0-3.78-1.11-5.65-4.05-5.65-3.42,0-4.89,1.92-4.89,6.59V393h-6.32Z"
+                transform="translate(-79.33 -208.54)" />
+            <path class="cls-2" d="M568.29,366.43H562v-5.21h6.32ZM562,370h6.32v23H562Z"
+                transform="translate(-79.33 -208.54)" />
+            <path class="cls-2" d="M571,388.24l12-13.49H571.85V370h19.4v4.76l-12,13.49H592.1V393H571Z"
+                transform="translate(-79.33 -208.54)" />
+            <path class="cls-2"
+                d="M599.8,383c.18,4,2.13,5.83,5.65,5.83,2.54,0,4.59-1.56,5-3H616c-1.78,5.43-5.56,7.75-10.77,7.75-7.26,0-11.75-5-11.75-12.11,0-6.9,4.76-12.15,11.75-12.15,7.83,0,11.61,6.58,11.17,13.66Zm10.28-4c-.58-3.21-2-4.9-5-4.9a5,5,0,0,0-5.25,4.9Z"
+                transform="translate(-79.33 -208.54)" />
+            <path class="cls-2"
+                d="M635.67,390.06h-.09c-1.47,2.5-4.05,3.57-7,3.57-6.94,0-10.32-6-10.32-12.33,0-6.19,3.43-11.93,10.19-11.93a8,8,0,0,1,6.86,3.42h0V361.22h6.32V393h-6Zm-5.52-15.93c-4.14,0-5.56,3.56-5.56,7.34,0,3.61,1.65,7.39,5.56,7.39,4.19,0,5.43-3.65,5.43-7.43S634.25,374.13,630.15,374.13Z"
+                transform="translate(-79.33 -208.54)" />
+            <path class="cls-2" d="M664.73,367.1h-9.52v-5.88h26v5.88h-9.53V393h-7Z"
+                transform="translate(-79.33 -208.54)" />
+            <path class="cls-2" d="M684,361.22h23.77v5.88H691v6.81h15.4v5.43H691v7.79h17.14V393H684Z"
+                transform="translate(-79.33 -208.54)" />
+            <path class="cls-2"
+                d="M711.06,361.22h13.71c8.24,0,14.42,5.17,14.42,15.71,0,9.22-4.71,16.07-14.42,16.07H711.06Zm7,25.91h6.23c4.05,0,7.93-2.5,7.93-9.53,0-6.41-2.23-10.5-9.17-10.5h-5Z"
+                transform="translate(-79.33 -208.54)" />
+            <path class="cls-2"
+                d="M759.18,383c.17,4,2.13,5.83,5.65,5.83,2.54,0,4.58-1.56,5-3h5.57c-1.78,5.43-5.57,7.75-10.77,7.75-7.26,0-11.75-5-11.75-12.11,0-6.9,4.76-12.15,11.75-12.15,7.83,0,11.61,6.58,11.17,13.66Zm10.28-4c-.58-3.21-2-4.9-5-4.9a5,5,0,0,0-5.25,4.9Z"
+                transform="translate(-79.33 -208.54)" />
+            <path class="cls-2" d="M790.47,393h-7l-7.88-23h6.64L787,385.7h.09L792,370h6.27Z"
+                transform="translate(-79.33 -208.54)" />
+            <path class="cls-2"
+                d="M804.31,383c.17,4,2.13,5.83,5.65,5.83,2.54,0,4.58-1.56,5-3h5.57c-1.78,5.43-5.57,7.75-10.77,7.75-7.26,0-11.75-5-11.75-12.11,0-6.9,4.76-12.15,11.75-12.15,7.83,0,11.61,6.58,11.17,13.66Zm10.28-4c-.58-3.21-2-4.9-5-4.9a5,5,0,0,0-5.25,4.9Z"
+                transform="translate(-79.33 -208.54)" />
+            <path class="cls-2"
+                d="M823.76,370h6v3.2h.14a8.2,8.2,0,0,1,7-3.82c6.72,0,8.41,3.78,8.41,9.48V393H839V380c0-3.78-1.11-5.65-4-5.65-3.43,0-4.89,1.92-4.89,6.59V393h-6.32Z"
+                transform="translate(-79.33 -208.54)" />
+            <path class="cls-2"
+                d="M857.27,370h4.63v4.23h-4.63v11.39c0,2.14.53,2.67,2.67,2.67a10,10,0,0,0,2-.17v4.94a25.39,25.39,0,0,1-3.7.22c-3.87,0-7.25-.89-7.25-5.48V374.22h-3.83V370H851v-6.9h6.32Z"
+                transform="translate(-79.33 -208.54)" />
+            <path class="cls-1" d="M109,256.08H79.33V229h91.88v27.12H141.56v78.7H109Z"
+                transform="translate(-79.33 -208.54)" />
+            <path class="cls-1" d="M176.27,229h89.19v27.12H208.87v13.19h56.59v25.2H208.87v13.19h56.61v27.12H176.27Z"
+                transform="translate(-79.33 -208.54)" />
+            <path class="cls-1"
+                d="M271,229h53.5c35.27,0,47.73,26.08,47.73,52.75,0,32.47-17.19,53.07-54.1,53.07H271Zm32.6,78.7H316.3c20.31,0,23.28-16.46,23.28-26.4,0-6.66-2.09-25.18-25.66-25.18H303.55Z"
+                transform="translate(-79.33 -208.54)" />
+            <path class="cls-1"
+                d="M419,294l-9.94-16.49L399.38,294H375.49l22.68-33.35-21.83-31.89h23.89l8.85,15.76,9.1-15.76h23.89l-21.83,31.89L442.92,294Z"
+                transform="translate(-79.33 -208.54)" />
+            <text class="cls-3" transform="translate(377.56 126.07)">Kanke</text>
+        </svg>
+    </div>
+    <div class="spacer"></div>
+    <button id="profile_btn" class="svg-margin-right nav-btn" title="Open profile settings page">
+        <svg viewBox="0 0 74 74" id="floidType">
+            <path d="M37.36,35.81c-6.14,0-11.13-4.99-11.13-11.13s4.99-11.13,11.13-11.13c6.14,0,11.13,4.99,11.13,11.13
+                S43.5,35.81,37.36,35.81z" />
+            <path d="M37.36,14.55c5.58,0,10.13,4.54,10.13,10.13s-4.54,10.13-10.13,10.13s-10.13-4.54-10.13-10.13S31.78,14.55,37.36,14.55
+                 M37.36,12.55c-6.7,0-12.13,5.43-12.13,12.13c0,6.7,5.43,12.13,12.13,12.13c6.7,0,12.13-5.43,12.13-12.13
+                C49.49,17.98,44.06,12.55,37.36,12.55L37.36,12.55z" />
+            <path d="M61.13,55c-2.25-6.92-12.04-12.13-23.77-12.13S15.84,48.08,13.59,55" />
+            <circle cx="37" cy="37" r="36" />
+        </svg>
+        <span id='floidTypeText'> </span>
+
+    </button>
+</nav>
+<!--admin option to scan QR code-->
+<section id="admin_scanner" class="fade-in page qr-scanner hide-completely container-card">
+    <header class="container-header">
+        <svg class="back-arrow" onclick="" viewBox="0 0 31.24 56.83" id='back_button_admin'>
+            <title>Go back</title>
+            <polyline points="29.83,1.41 2.83,28.41 29.83,55.41 " />
+        </svg>
+        <h3>Scan</h3>
+    </header>
+    <div id='admin_video_div' class="video">
+        <div id="scanner_line"></div>
+        <video id="video2"></video>
+    </div>
+    <button id="switch_camera2">
+        <svg viewBox="0 0 64.61 51.64">
+            <path
+                d="M9.8,15.33c-1.49,3.19-2.32,6.74-2.32,10.49c0,13.71,11.11,24.82,24.82,24.82c4.52,0,8.76-1.21,12.41-3.32" />
+            <polygon points="0,18.65 0.87,20.45 9.74,16.15 13.39,25.31 15.25,24.57 10.8,13.41 			" />
+            <path
+                d="M54.81,36.31c1.49-3.19,2.32-6.74,2.32-10.49C57.12,12.11,46.01,1,32.3,1c-4.52,0-8.76,1.21-12.41,3.32" />
+            <polygon points="64.61,32.98 63.74,31.18 54.87,35.49 51.22,26.33 49.36,27.07 53.8,38.23 			" />
+        </svg>
+    </button>
+</section>
+<!--page for selecting events-->
+<main id="main_page" class="container-card page fade-in">
+    <h3>Select Option</h3>
+<div id="option_checklist">
+    <label class="checkbox">
+        <input type="radio" name="opts">
+        <svg viewBox="0 0 100 100">
+            <path class="box"
+                d="M82,89H18c-3.87,0-7-3.13-7-7V18c0-3.87,3.13-7,7-7h64c3.87,0,7,3.13,7,7v64C89,85.87,85.87,89,82,89z" />
+            <polyline class="check" points="25.5,53.5 39.5,67.5 72.5,34.5 " />
+        </svg>
+        <h4 data-value='addIntern'>Add Ticket</h4 va>
+    </label>
+    <label class="checkbox">
+        <input type="radio" name="opts">
+        <svg viewBox="0 0 100 100">
+            <path class="box"
+                d="M82,89H18c-3.87,0-7-3.13-7-7V18c0-3.87,3.13-7,7-7h64c3.87,0,7,3.13,7,7v64C89,85.87,85.87,89,82,89z" />
+            <polyline class="check" points="25.5,53.5 39.5,67.5 72.5,34.5 " />
+        </svg>
+        <h4 data-value='removeIntern'>Remove Ticket</h4 va>
+    </label>
+    <label class="checkbox">
+        <input type="radio" name="opts">
+        <svg viewBox="0 0 100 100">
+            <path class="box"
+                d="M82,89H18c-3.87,0-7-3.13-7-7V18c0-3.87,3.13-7,7-7h64c3.87,0,7,3.13,7,7v64C89,85.87,85.87,89,82,89z" />
+            <polyline class="check" points="25.5,53.5 39.5,67.5 72.5,34.5 " />
+        </svg>
+        <h4 data-value='directAuthorize'>Direct Authorize</h4>
+    </label>
+    <label class="checkbox">
+        <input type="radio" name="opts">
+        <svg viewBox="0 0 100 100">
+            <path class="box"
+                d="M82,89H18c-3.87,0-7-3.13-7-7V18c0-3.87,3.13-7,7-7h64c3.87,0,7,3.13,7,7v64C89,85.87,85.87,89,82,89z" />
+            <polyline class="check" points="25.5,53.5 39.5,67.5 72.5,34.5 " />
+        </svg>
+        <h4 data-value='Authorize'>Authorize</h4>
+    </label>
+</div>
+    <button id="authorize_btn" class="main-btn">Scan ID</button>
+</main>
+<div id="countdown" class="page padding hide-completely fade-in">
+    <div id="timer">
+        <svg viewBox="0 0 72.5 72.5" >
+            <circle class="outer-circle" cx="37.5" cy="37.5" r="36"/>
+        </svg>
+        <h1>20</h1>
+    </div>
+    <h4>Waiting for attendee to verify.</h4>
+</div>
+<div id="auth_success" class="page hide-completely padding fade-in">
+    <svg viewBox="0 0 72.5 72.5" >
+        <circle class="outer-circle" cx="37.5" cy="37.5" r="36"/>
+        <polyline class="check-mark" points="17.15,36.22 30,48.91 57.78,22.85 "/>
+    </svg>
+    <h2>Authorised</h2>
+</div>
+<!--Settings page-->
+<div id="settings_page" class="page hide-completely container-card fade-in">
+    <h2>Settings</h2>
+    <section>
+        <h3>Account</h3>
+        <h4 id="username" class="capitalise"></h4>
+        <p>This will delete all local data.</p>
+        <button id="logout" class="svg-margin-right" title="sign out of the app" onclick="logout()">
+            <svg viewBox="0 0 73.21 55">
+                <path d="M27.71,9.5" />
+                <polyline points="27.71,14 27.71,0.5 72.71,0.5 72.71,54.5 27.71,54.5 27.71,41" />
+                <line x1="41.85" y1="27.6" x2="0.71" y2="27.6" />
+                <polyline points="16.14,12.17 0.71,27.6 16.14,43.03" />
+            </svg>
+            Sign out
+        </button>
+    </section>
+    <section>
+        <h3>Dark mode</h3>
+        <div>
+            <span class="row">
+                Automatic<br>
+                <span>Dark mode active : 6pm - 6am</span>
+            </span>
+            <label class="switch">
+                <input aria-label="Toggle automatic dark theme" autocomplete="new-password" type="checkbox"
+                    id="auto-mode" type="checkbox" onclick="autoMode()" />
+                <span class="slider round"></span>
+            </label>
+        </div>
+        <div>
+            <span class="row">Manual<br>
+                <span>Dark mode</span>
+            </span>
+            <label class="switch">
+                <input aria-label="Toggle manual dark theme" autocomplete="new-password" type="checkbox"
+                    id="manual-mode" type="checkbox" onclick="theme()" />
+                <span class="slider round"></span>
+            </label>
+        </div>
+    </section>
+    <section>
+        <h3>About</h3>
+        <h5>Version 1.0.0</h5>
+        <a class="border-card" href="https://flo.cash/" target="_blank" rel="noopener noreferrer">
+            <h5>Powered by</h5>
+            <svg viewBox="0 0 108 48" style="enable-background:new 0 0 107.65 47.07;" xml:space="preserve">
+                <g>
+                    <path class="flo-logo"
+                        d="M34.2,32.4c0,0,3.75-0.18,7.41-3.86c2.96-2.98,3.65-6.66,3.99-8.52c-11.04-0.63-12.36,0.99-13.71,1.68
+                            c-1.19,0.61-5.33,4.55-5.33,4.55s3.06-3.13,3.2-9.94c0.09-4.54-1.02-7.39-2.72-10.64C25.29,2.33,22.79,0,22.79,0l0.01,4.97
+                            c0,0,4.35,2.84,4.35,11.84c0,6.52-4.35,11.02-4.35,11.02s-4.35-4.5-4.35-11.02c0-9.01,4.35-11.84,4.35-11.84L22.79,0
+                            c0,0-2.48,2.33-4.23,5.67c-1.7,3.25-2.81,6.1-2.72,10.64c0.13,6.81,3.2,9.94,3.2,9.94s-4.14-3.95-5.33-4.55
+                            c-1.35-0.69-2.67-2.31-13.71-1.68c0.34,1.86,1.03,5.54,3.99,8.52c3.66,3.68,7.41,3.86,7.41,3.86s-5.05-2.03-7.15-9.45
+                            c0,0,5.76-0.7,9.63,1.87c2.52,1.67,4.86,4.26,6.79,6.01c0,0-2.58-0.04-6.81,1.88c-2.54,1.15-3.92,2.84-4.44,4.38
+                            c-0.36,1.06-0.2,2.27-0.2,2.27s3.31,0.31,5.94,0c1.99-0.23,3.42-2.16,3.42-2.16s-2,0.78-3.95,0.78c-2.06,0-2.67-0.66-2.67-0.66
+                            c0.98-3.64,8.68-5.19,8.68-5.19s-1.34,2.6-1.42,6.5c-0.1,4.79,3.57,8.52,3.57,8.45c0,0.07,3.67-3.66,3.57-8.45
+                            c-0.08-3.9-1.42-6.5-1.42-6.5s7.71,1.55,8.68,5.19c0,0-0.61,0.66-2.67,0.66c-1.95,0-3.95-0.78-3.95-0.78s1.43,1.93,3.42,2.16
+                            c2.63,0.31,5.94,0,5.94,0s0.16-1.21-0.2-2.27c-0.52-1.54-1.9-3.23-4.44-4.38c-4.23-1.92-6.81-1.88-6.81-1.88
+                            c1.93-1.76,4.27-4.34,6.79-6.01c3.87-2.57,9.63-1.87,9.63-1.87C39.26,30.38,34.2,32.4,34.2,32.4z M22.8,43.06
+                            c-0.95-1.37-1.47-2.13-1.47-4.26c0-2.4,1.12-4.61,1.47-5.14c0.35,0.52,1.47,2.74,1.47,5.14C24.27,40.92,23.75,41.69,22.8,43.06z" />
+                    <g>
+                        <polygon class="flo-logo"
+                            points="73.53,36.36 73.53,20.01 70.53,20.01 70.53,36.36 70.53,39.35 84,39.35 84,36.36 		" />
+                        <g>
+                            <rect x="52.75" y="20.01" class="flo-logo" width="13.47" height="2.93" />
+                            <polygon class="flo-logo" points="63.74,28.36 55.74,28.36 52.75,28.36 52.75,31.35 52.75,39.35 55.74,39.35 55.74,31.35 63.74,31.35 
+                                                " />
+                        </g>
+                        <path class="flo-logo" d="M97.99,20.01c-5.34,0-9.67,4.33-9.67,9.67s4.33,9.67,9.67,9.67s9.67-4.33,9.67-9.67S103.33,20.01,97.99,20.01
+                                z M97.99,35.85c-3.41,0-6.17-2.76-6.17-6.17c0-3.41,2.76-6.17,6.17-6.17c3.41,0,6.17,2.76,6.17,6.17
+                                C104.15,33.09,101.39,35.85,97.99,35.85z" />
+                    </g>
+                </g>
+            </svg>
+        </a>
+    </section>
+</div>
+<footer class="footer">
+    <section class="container">
+        <p>Made for <span style="font-weight: 500;">TEDxKanke</span> by <a target="_blank"
+                href="https://facebook.com/ranchimall" title="Ranchi Mall">Ranchi Mall</a>.</p>
+    </section>
+</footer>
+
+
+<script type="text/javascript" src="https://unpkg.com/@zxing/library@latest"></script>
+<script type="text/javascript">
+
+    function authorizeFloID(userfloID, venue = "event") {
+
+        var messageToVerify = `Authorize-${venue}`
+        const taskNumber = {
+            preevent: 1, 
+            event: 2, 
+            food: 3
+        }
+        const projectCode = "2020_project_1"
+        const branch = "branch1"
+
+        stopScanning()
+        if(TEDxKanke.getAssignedInterns(projectCode, branch, taskNumber[venue])!=null && TEDxKanke.getAssignedInterns(projectCode, branch, taskNumber[venue]).includes(userfloID)){
+            console.log(`${userfloID} is already authorized`);
+            showMessege('error', `Already authorized for ${venue}`);
+            setTimeout( () => document.getElementById('authorize_btn').click(), 2000); 
+            return
+        }
+        
+        // Now run a function for the next 20 seconds 
+        // Will execute myCallback every 5 seconds 
+        var currenttime = Date.now();
+        var maxDelay = 20000
+        var interval = setInterval(myScan, 2500);
+        startCountdown()
+        // fetch for details of messages
+        function myScan() {
+
+            floCloudAPI.requestApplicationData({ type: "TestMod", 
+                    senderIDs: [userfloID], 
+                    lowerVectorClock: currenttime.toString(), 
+                    upperVectorClock: (currenttime + maxDelay).toString()
+                }).then(results => {
+                    results = JSON.parse(results)
+                    console.log(results)
+                    for(key in results){
+                        //Enters in this loop only if there is an message from the user
+                        if(results[key].message === messageToVerify){
+                            //Authorise the floID
+                            console.log('I have a message which satisfies the criteria');
+                            console.log('scanning stopped');
+                            clearInterval(interval);
+                            TEDxKanke.refreshObjectData().then(result => {
+                                TEDxKanke.manage.assignInternToTask(userfloID, projectCode, branch, taskNumber[venue])
+                                TEDxKanke.manage.updateObjects()
+                                    .then(result => console.log(result))
+                                    .catch(error => console.log(error))
+                                TEDxKanke.postInternUpdate(`${userfloID} has entered ${venue}`)
+                            }).catch(error => console.log(error))
+                            showPage('auth_success')
+                            showMessege('', `Authorized for ${venue}`);
+                            setTimeout( () => document.getElementById('authorize_btn').click(), 2000); 
+                            break;
+                        }
+                    }
+                    if (Date.now() - currenttime > maxDelay) {
+                        //Stop the check after maxDelay
+                        showMessege('error', `Authorization failed`);
+                        console.log('scanning stopped');
+                        clearInterval(interval);
+                        setTimeout( () => document.getElementById('authorize_btn').click(), 2000); 
+                    }
+                }).catch(error => console.error(error))
+        }
+    }
+
+    function directAuthorizeFloID(userfloID, venue = "event") {
+
+        const taskNumber = {
+            preevent: 1, 
+            event: 2, 
+            food: 3
+        }
+        const projectCode = "2020_project_1"
+        const branch = "branch1"
+
+        stopScanning()
+        if(TEDxKanke.getAssignedInterns(projectCode, branch, taskNumber[venue])!=null && TEDxKanke.getAssignedInterns(projectCode, branch, taskNumber[venue]).includes(userfloID)){
+            console.log(`${userfloID} is already authorized`);
+            showMessege('error', `Already authorized for ${venue}`);
+            setTimeout( () => document.getElementById('authorize_btn').click(), 2000); 
+            return
+        }
+        
+        TEDxKanke.refreshObjectData().then(result => {
+            TEDxKanke.manage.assignInternToTask(userfloID, projectCode, branch, taskNumber[venue])
+            TEDxKanke.manage.updateObjects()
+                .then(result => console.log(result))
+                .catch(error => console.log(error))
+            TEDxKanke.postInternUpdate(`${userfloID} has entered ${venue}`)
+        }).catch(error => console.log(error))
+        showPage('auth_success')
+        showMessege('', `Authorized for ${venue}`);
+        setTimeout( () => document.getElementById('authorize_btn').click(), 2000); 
+    }
+
+    function addFloIDasIntern(userfloID){
+        stopScanning()
+        TEDxKanke.refreshObjectData().then(result => {
+            if(TEDxKanke.manage.addIntern(userfloID, userfloID)){
+                TEDxKanke.manage.updateObjects()
+                    .then(result => console.log(result))
+                    .catch(error => console.log(error))
+                showMessege('', `Ticket Added`);
+            }else
+                showMessege('error', `Ticket already exist`);
+            setTimeout( () => document.getElementById('authorize_btn').click(), 2000); 
+        }).catch(error => console.log(error))
+    }
+
+    function removeFloIDfromIntern(userfloID){
+        stopScanning()
+        TEDxKanke.refreshObjectData().then(result => {
+            if(TEDxKanke.manage.rmIntern(userfloID)){
+                TEDxKanke.manage.updateObjects()
+                    .then(result => console.log(result))
+                    .catch(error => console.log(error))
+                showMessege('', `Removed Ticket`);
+            }else
+                showMessege('error', `Ticket doesnot exist`);
+            setTimeout( () => document.getElementById('authorize_btn').click(), 2000); 
+        }).catch(error => console.log(error))
+    }
+
+
+    function updatePrivKey() {
+
+    }
+
+    function decodeOnce(codeReader, selectedDeviceId) {
+        codeReader.decodeFromInputVideoDevice(selectedDeviceId, 'video').then((result) => {
+            console.log(result);
+            console.log('decoded value is ');
+            window.decodedQr = result.text;
+
+
+        }).catch((err) => {
+            console.error(err)
+            document.getElementById('result').textContent = err
+        })
+    }
+
+    function decodeContinuously(codeReader, selectedDeviceId, elementID, option) {
+        console.log(option)
+        let scanLine = document.getElementById('scanner_line');
+        codeReader.decodeFromInputVideoDeviceContinuously(selectedDeviceId, elementID, (result, err) => {
+            if (result) {
+                
+                // properly decoded qr code
+                console.log('Decoded value is \n', result.text);
+                window.decodedQr = result.text;
+                if (result.text.length == 34 && result.text[0] == 'F') {
+                    if(floCrypto.validateAddr(result.text)){
+                        var userfloID = result.text;
+                        switch(option){
+                            case "addIntern": addFloIDasIntern(userfloID); break;
+                            case "removeIntern": removeFloIDfromIntern(userfloID); break;
+                            case "directAuthorize": directAuthorizeFloID(userfloID); break;
+                            case "Authorize": authorizeFloID(userfloID); break;
+                            default: showMessege('error', 'Invalid Option');
+                        }
+                    } else {
+                        showMessege('error', 'Invalid FLO_ID');
+                    }                     
+                    // fetch for details of messages
+                    //messageScan(userfloID, venue)
+                }
+                else if (result.text.length > 40 && result.text[0] == 'R') {
+                    if(option === "Private_Key")
+                        document.getElementById('qr_btn').click();
+                    else 
+                        showMessege('error', 'Doesnot required Private_Key here');
+                }
+                else {
+                    showMessege('error', 'Invalid FLO_ID/Private_Key');                      
+                }
+            }
+
+
+            if (err) {
+                // As long as this error belongs into one of the following categories
+                // the code reader is going to continue as excepted. Any other error
+                // will stop the decoding loop.
+                //
+                // Excepted Exceptions:
+                //
+                //  - NotFoundException
+                //  - ChecksumException
+                //  - FormatException
+
+                if (err instanceof ZXing.NotFoundException) {
+                    console.log('No QR code found.')
+                }
+
+                if (err instanceof ZXing.ChecksumException) {
+                    console.log('A code was found, but it\'s read value was not valid.')
+                }
+
+                if (err instanceof ZXing.FormatException) {
+                    console.log('A code was found, but it was in a invalid format.')
+                }
+            }
+        })
+    }
+
+    window.addEventListener('load', function () {
+        let selectedDeviceId;
+        const codeReader = new ZXing.BrowserQRCodeReader()
+        console.log('ZXing code reader initialized')
+
+        codeReader.getVideoInputDevices()
+            .then((videoInputDevices) => {
+
+                var videoInputDeviceIds = [];
+                selectedDeviceId = videoInputDevices[0].deviceId
+                if (videoInputDevices.length >= 1) {
+                    videoInputDevices.forEach((element) => {
+                        videoInputDeviceIds.push(element.deviceId);
+                    })
+
+                    /*sourceSelect.onchange = () => {
+                        selectedDeviceId = sourceSelect.value;
+                    };
+
+                    const sourceSelectPanel = document.getElementById('sourceSelectPanel')
+                    sourceSelectPanel.style.display = 'block'*/
+                }
+
+                document.getElementById('qr_btn').addEventListener('click', () => {
+
+                    if (window.decodedQr.length > 40) {
+                        codeReader.reset();
+                        hidePopup('qr_sign_in');
+                    }
+                    else {
+
+                    }
+                })
+
+                window.stopScanning = function(){
+                    codeReader.reset();
+                    document.getElementById('scanner_line').classList.remove('scan')
+                }
+                document.getElementById('guest_btn').addEventListener('click', () => {
+
+                    //const decodingStyle = document.getElementById('decoding-style').value;
+                    //if (decodingStyle == "once") {
+                    decodeContinuously(codeReader, selectedDeviceId, 'video', "Private_Key");
+                    /* } else {
+                            decodeContinuously(codeReader, selectedDeviceId);
+                        }*/
+
+                    console.log(`Started decode from camera with id ${selectedDeviceId}`)
+                })
+                let cameraSwitch = document.getElementById('switch_camera');
+                cameraSwitch.addEventListener('click', () => {
+                    cameraSwitch.firstElementChild.classList.add('anim-rotate');
+                    cameraSwitch.addEventListener('webkitAnimationEnd', () => {
+                        cameraSwitch.firstElementChild.classList.remove('anim-rotate');
+                    })
+                    cameraSwitch.addEventListener('animationend', () => {
+                        cameraSwitch.firstElementChild.classList.remove('anim-rotate');
+                    })
+
+                    // find index 
+                    codeReader.reset();
+                    var currentidindex = videoInputDeviceIds.indexOf(selectedDeviceId);
+
+                    if (currentidindex == videoInputDeviceIds.length-1){
+                        selectedDeviceId = videoInputDeviceIds[0];                            
+                    }
+                    else{
+                        selectedDeviceId = videoInputDeviceIds[currentidindex+1];
+                    }
+                    decodeContinuously(codeReader, selectedDeviceId, 'video', "Private_Key");
+
+                })
+
+                document.getElementById('authorize_btn').addEventListener('click', () => {
+                    // check if any of the venue is seleted
+                    let checklist = document.getElementById('option_checklist'),
+                    checkeditem = '',
+                    scanLine = document.getElementById('scanner_line');
+                    for (var i = 0; i < checklist.children.length; i++) {
+                        if (checklist.children[i].children[0].checked) {
+                            // find the name of what is checked
+                            checkeditem = checklist.children[i].children[2].dataset.value;
+                        }
+                    }
+                    let idtype = document.getElementById('floidTypeText');
+                    if(idtype.textContent === 'admin'){
+                        if (checkeditem != ''){
+                            decodeContinuously(codeReader, selectedDeviceId, 'video2', checkeditem)
+                            showPage('admin_scanner')
+                            scanLine.classList.add('scan')
+                            console.log(`Started decode from camera with id ${selectedDeviceId}`)
+                        }else {
+                            showMessege('error', 'Please select an option');
+                        }
+                    } else if (idtype.textContent === 'user') {
+                        floCloudAPI.sendApplicationData(`Authorize-${checkeditem}`, "TestMod");
+                        showMessege('', 'Sent Authorization message to cloud');
+                    }
+                })
+                
+                let cameraSwitch2 = document.getElementById('switch_camera2');
+                cameraSwitch2.addEventListener('click', () => {
+                    cameraSwitch2.firstElementChild.classList.add('anim-rotate');
+                    cameraSwitch2.addEventListener('webkitAnimationEnd', () => {
+                        cameraSwitch2.firstElementChild.classList.remove('anim-rotate');
+                    })
+                    cameraSwitch2.addEventListener('animationend', () => {
+                        cameraSwitch2.firstElementChild.classList.remove('anim-rotate');
+                    })
+
+                    // find index 
+                    codeReader.reset();
+                    var currentidindex = videoInputDeviceIds.indexOf(selectedDeviceId);
+
+                    if (currentidindex == videoInputDeviceIds.length-1){
+                        selectedDeviceId = videoInputDeviceIds[0];                            
+                    }
+                    else{
+                        selectedDeviceId = videoInputDeviceIds[currentidindex+1];
+                    }
+                    document.getElementById('authorize_btn').click()
+                    //decodeContinuously(codeReader, selectedDeviceId, 'video2');
+                })
+                
+                document.getElementById('back_to_main_page').addEventListener('click', () => {
+                    codeReader.reset();
+                })
+
+                document.getElementById('back_button_admin').addEventListener('click', () => {
+                    codeReader.reset();
+                    document.getElementById('admin_scanner').classList.add('hide-completely');
+                    document.getElementById('main_page').classList.remove('hide-completely');
+                })
+            })
+            .catch((err) => {
+                console.error(err)
+            })
+    })
+</script>
+<script>
+    if (!navigator.onLine)
+        showMessege('error', 'There seems to be a problem connecting to the internet.', 'fixed')
+    window.addEventListener('offline', () => {
+        showMessege('error', 'There seems to be a problem connecting to the internet.', 'fixed')
+    })
+    window.addEventListener('online', () => {
+        showMessege('', 'We are back online.')
+    })
+    let mode;
+    if (localStorage.getItem('dark') === null)
+        localStorage.setItem('dark', 'auto')
+    const html = document.querySelector('html');
+    if (localStorage.dark === 'yes') {
+        nightlight();
+        document.getElementById('manual-mode').checked = true;
+        clearInterval(mode);
+    }
+    else if (localStorage.dark === 'auto') {
+        document.getElementById('auto-mode').checked = true;
+        document.getElementById('manual-mode').checked = false;
+        autoMode();
+        mode = setInterval(() => {
+            let d = new Date(),
+                t = d.getHours();
+            if (t > 6 && t < 18) {
+                daylight();
+            }
+            else {
+                nightlight();
+            }
+        }, 60000);
+    }
+    else {
+        daylight();
+        document.getElementById('manual-mode').checked = false;
+        clearInterval(mode);
+    }
+    function daylight() {
+        html.setAttribute("style", `--rgb-bw: 0,0,0;--light-text: #222;--background: 236, 239, 241;--foreground:#fff;--light-color: 170,170,170;--dark-color: #ddd;`);
+    }
+    function nightlight() {
+        html.setAttribute("style", `--rgb-bw: 255,255,255;--light-text: #eee;--background: 34,34,34;--foreground: #2a2a2a;--light-color: 51, 51, 51;--dark-color: #111;`);
+    }
+    function autoMode() {
+        let x = document.getElementById('auto-mode');
+        if (x.checked) {
+            localStorage.setItem('dark', 'auto');
+            document.getElementById('manual-mode').checked = false;
+            let d = new Date();
+            let t = d.getHours();
+            if (t > 6 && t < 18) {
+                daylight();
+            }
+            else {
+                nightlight();
+            }
+        }
+        else {
+            localStorage.setItem('dark', 'no');
+            daylight();
+            clearInterval(mode);
+        }
+    }
+    function theme() {
+        let x = document.getElementById('manual-mode');
+        if (!x.checked) {
+            daylight();
+            localStorage.setItem('dark', 'no');
+        }
+        else {
+            nightlight();
+            localStorage.setItem('dark', 'yes');
+            document.getElementById('auto-mode').checked = false;
+        }
+    }
+    function showPopup(popup, permission) {
+        let thisPopup = document.getElementById(popup);
+        thisPopup.parentNode.classList.remove('hide');
+        thisPopup.classList.add('no-transformations');
+        window.onmousedown = function (event) {
+            if (event.target == thisPopup.parentNode && permission !== 'no')
+                hidePopup(popup, permission);
+        }
+    }
+
+    // hides the popup or modal 
+    function hidePopup(pop, permission) {
+        if (permission === 'no') return;
+        let popup = document.getElementById(pop)
+        popup.parentNode.classList.add('hide');
+        popup.classList.remove('no-transformations');
+        clearAllInputs(popup)
+    }
+    function clearAllInputs(parent) {
+        parent.querySelectorAll("input, textarea").forEach((field) => {
+            field.value = '';
+        })
+    }
+    function logout() {
+        askConfirmation("Do you want to sign out?").then((result) => {
+            if (result) {
+                floDapps.clearCredentials()
+                compactIDB.deleteDB().then((message) => {
+                    onLoadStartUp()
+                    showMessege('', 'You have signed out successfully.')
+                }).catch((error) => {
+                    console.log(error)
+                })
+            }
+        })
+    }
+    let myInput = function () {
+        return new Promise((resolve, reject) => {
+            showPopup('sign_in', 'no');
+            let container = document.getElementById('priv_key_sign_in'),
+                signIn = document.getElementById('sign_in'),
+                privField = document.getElementById('priv_key_field'),
+                btn = document.getElementById('back_to_main_page'),
+                qrcode = document.getElementById('qr_sign_in'),
+                mainpage = document.getElementById('main_page'),
+                qrbutton = document.getElementById('qr_btn');
+
+            document.getElementById('guest_btn').onclick = function () {
+                qrcode.classList.remove('hide-completely')
+                signIn.children[2].classList.add('hide-completely')
+                btn.classList.remove('hide-completely')
+            }
+
+            document.getElementById('priv_key_btn').onclick = function () {
+                container.classList.remove('hide-completely')
+                btn.classList.remove('hide-completely')
+                signIn.children[2].classList.add('hide-completely')
+                privField.focus()
+            }
+
+            btn.onclick = function () {
+                container.classList.add('hide-completely')
+                qrcode.classList.add('hide-completely')
+                signIn.children[2].classList.remove('hide-completely')
+                btn.classList.add('hide-completely')
+            }
+
+            privField.addEventListener('keyup', (event) => {
+                if (privField.value.trim() !== '')
+                    enableBtn('sign_in_btn')
+                else
+                    disableBtn('sign_in_btn')
+                if (event.keyCode === 13 || event.key === 13) {
+                    if (privField.value.trim().length > 40) {
+                        resolve(privField.value.trim())
+                        hidePopup('sign_in')
+                    }
+                    else {
+                        showMessege('error', 'Please enter correct private key.')
+                    }
+                }
+            })
+            document.getElementById('sign_in_btn').onclick = function () {
+                if (privField.value.trim().length > 40) {
+                    resolve(privField.value.trim());
+                    hidePopup('sign_in');
+                }
+                else {
+                    showMessege('error', 'Please enter correct private key.')
+                }
+            }
+            document.getElementById('qr_btn').onclick = function () {
+                if (window.decodedQr.length > 40) {
+                    resolve(window.decodedQr.trim());
+                    hidePopup('sign_in');
+
+                    //btn.click()
+                }
+                else {
+                    showMessege('error', 'Please enter correct private key.')
+                }
+            }
+
+
+        })
+    }
+
+
+    function enableBtn(btn) {
+        if (typeof btn === 'string')
+            btn = document.getElementById(btn);
+        if (btn.disabled)
+            btn.disabled = false;
+    }
+
+    function disableBtn(btn) {
+        if (typeof btn === 'string')
+            btn = document.getElementById(btn);
+        if (!btn.disabled)
+            btn.disabled = true;
+    }
+    let askConfirmation = function (message) {
+        return new Promise((resolve, reject) => {
+            let popup = document.getElementById('confirmation');
+            showPopup('confirmation')
+            popup.children[0].textContent = message;
+            popup.children[1].firstElementChild.onclick = function () {
+                hidePopup('confirmation')
+                resolve(false)
+            }
+            popup.children[1].children[1].onclick = function () {
+                hidePopup('confirmation')
+                resolve(true);
+            }
+        })
+    }
+    let currentTimeout;
+    function showMessege(mode, message, behavior) {
+        let banner = document.getElementById('show_message')
+        if (mode === 'error')
+            banner.style.background = '#D32F2F';
+        else
+            banner.style.background = '#00C853';
+        banner.classList.add('no-transformations')
+        banner.classList.remove('hide')
+        banner.children[0].textContent = message.charAt(0).toUpperCase() + message.slice(1);
+        banner.children[1].onclick = function () {
+            banner.classList.add('hide')
+            banner.classList.remove('no-transformations')
+        }
+        clearTimeout(currentTimeout)
+        if (behavior === 'fixed') return;
+        currentTimeout = setTimeout(() => {
+            banner.classList.add('hide')
+            banner.classList.remove('no-transformations')
+        }, 4000)
+    }
+    let appState = {
+        page: 'main_page',
+    }
+    history.pushState(appState, null, null)
+
+    window.onpopstate = (event) => showPage(event.state.page)
+
+    function showPage(page) {
+        console.log(page)
+        let thisPage = document.getElementById(page),
+            allPages = document.querySelectorAll('.page')
+        allPages.forEach((pages) => {
+            pages.classList.add('hide-completely');
+        });
+        thisPage.classList.remove('hide-completely');
+        if(page !== 'admin_scanner')
+            stopScanning()
+    }
+    let lastState = '';
+    document.getElementById('top_nav').addEventListener('click', (event) => {
+        let trgt = event.target.closest('.nav-btn');
+        if (trgt) {
+            if (trgt.id === 'profile_btn') {
+                showPage('settings_page')
+                appState.page = 'settings_page';
+            }
+            else if (trgt.id === 'app_logo') {
+                showPage('main_page')
+                appState.page = 'main_page';
+            }
+            if (lastState !== appState.page)
+                history.pushState(appState, null, null)
+            lastState = appState.page;
+        }
+    });  
+    let countInternval;
+    function startCountdown(){
+        showPage('countdown')
+        let offset = 11.42,
+        countdown = 20
+        parent = document.getElementById('timer');
+        let countInternval = setInterval(() => {
+            parent.firstElementChild.style.strokeDashoffset = offset;
+            offset += 11.42;
+            parent.children[1].textContent = countdown;
+            countdown--;
+            if(countdown === -1)
+                parent.firstElementChild.style.strokeDashoffset = 240;
+
+        }, 1000)
+        setTimeout(() => {
+            clearInterval(countInternval)
+        }, 21000)
+    }
+    function stopCountdown(){
+        console.log('hi')
+        clearInterval(countInternval)
+    }
+    
 </script>
 </body>
 </html>
