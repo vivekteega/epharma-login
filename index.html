@@ -10438,12 +10438,13 @@ Bitcoin.Util = {
         
         floDapps.launchStartUp().then(result => {
             console.log(result)
-            alert(`Welcome FLO_ID: ${myFloID}`)
+
+            //alert(`Welcome FLO_ID: ${myFloID}`)
             //App functions....
             if(floGlobals.subAdmins.includes(myFloID)){
-                document.getElementById('showresult').innerText = `Welcome Pharmacist ${myFloID}`
+                alert(`Whatsup Pharmacist ${myFloID}`)
             }else{
-                document.getElementById('showresult').innerText = `Welcome User ${myFloID}`
+                alert(`Whatsup User ${myFloID}`)
             }
         }).catch(error => console.error(error))
     }
@@ -10469,7 +10470,7 @@ Bitcoin.Util = {
             </svg>
             <h2>Sign In</h2>
         </header>
-        <p>Welcome to TEDxKanke.</p>
+        <p>Welcome to ePharma.</p>
         <div id="sign_in_options" class="fade-in">
             <button id="guest_btn" class="hover" title="sign in with QR Code">
                 <style>
