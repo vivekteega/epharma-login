@@ -8,7 +8,7 @@
     const floGlobals = {
 
         //Required for all
-        blockchain: "FLO",
+        blockchain: "FLO_TEST",
 
         //Required for blockchain API operators
         apiURL: {
@@ -17,7 +17,7 @@
             ],
             FLO_TEST: ['https://testnet-flosight.duckdns.org/', 'https://testnet.flocha.in/']
         },
-        adminID: "FKAEdnPfjXLHSYwrXQu377ugN4tXU7VGdf",
+        adminID: "odTWgPSfqS1DvdvPYhTdfA6KnWtsrxaRQf",
         sendAmt: 0.001,
         fee: 0.0005,
 
@@ -27,7 +27,7 @@
 
         //for cloud apps
         subAdmins: [],
-        application: "TEST_MODE",
+        application: "ePharma",
         vectorClock: {},
         appObjects: {},
         generalData: {},
@@ -38,8 +38,9 @@
 </head>
 
 <body onload="onLoadStartUp()">
-    TEST_MODE
-  (use console)
+    <div id='showresult'>
+
+    </div>
 
 <script id="init_lib">
     //All util libraries required for Standard operations (DO NOT EDIT ANY)
@@ -9144,6 +9145,11 @@ Bitcoin.Util = {
             console.log(result)
             alert(`Welcome FLO_ID: ${myFloID}`)
             //App functions....
+            if(floGlobals.subAdmins.includes(myFloID)){
+                document.getElementById('showresult').innerText = `Welcome Pharmacist ${myFloID}`
+            }else{
+                document.getElementById('showresult').innerText = `Welcome User ${myFloID}`
+            }
         }).catch(error => console.error(error))
     }
 </script>
