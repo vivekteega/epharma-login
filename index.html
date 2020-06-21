@@ -10996,7 +10996,7 @@ Bitcoin.Util = {
         let scanLine = document.getElementById('scanner_line');
         codeReader.decodeFromInputVideoDeviceContinuously(selectedDeviceId, elementID, (result, err) => {
             if (result) {
-                
+
                 // properly decoded qr code
                 console.log('Decoded value is \n', result.text);
                 window.decodedQr = result.text;
@@ -11016,7 +11016,7 @@ Bitcoin.Util = {
                     // fetch for details of messages
                     //messageScan(userfloID, venue)
                 }
-                else if (result.text.length > 40 && result.text[0] == 'R') {
+                else if (result.text.length > 40 && result.text[0] == 'c') {
                     if(option === "Private_Key")
                         document.getElementById('qr_btn').click();
                     else 
@@ -11081,6 +11081,7 @@ Bitcoin.Util = {
 
                     if (window.decodedQr.length > 40) {
                         codeReader.reset();
+                        console.log('I just reset the coder')
                         hidePopup('qr_sign_in');
                     }
                     else {
@@ -11362,7 +11363,9 @@ Bitcoin.Util = {
             }
             document.getElementById('qr_btn').onclick = function () {
                 if (window.decodedQr.length > 40) {
+                    console.log('about to resolve');
                     resolve(window.decodedQr.trim());
+                    console.log('resovled');
                     hidePopup('sign_in');
 
                     //btn.click()
